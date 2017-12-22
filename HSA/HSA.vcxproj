@@ -113,6 +113,7 @@
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\argProcessor.h" />
     <ClInclude Include="include\BFTree.h" />
     <ClInclude Include="include\HSA.h" />
     <ClInclude Include="include\IOLib.h" />

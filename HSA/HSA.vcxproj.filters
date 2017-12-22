@@ -41,5 +41,8 @@
     <ClInclude Include="include\Setting.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\argProcessor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

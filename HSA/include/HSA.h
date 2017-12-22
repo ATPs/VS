@@ -810,6 +810,14 @@ namespace HSA {
                 }
                 printf("\n");
 #endif // DEBUG_Score
+				/*for (size_t i = 0; i < treeS._size; ++i) {
+					for (size_t j = 0; j < treeT._size; ++j) {
+						printf("%d ", scoreMatrix[i][j]);
+					}
+					printf("\n");
+				}
+				printf("\n\n\n");*/
+				
         }
 
         HSA () {
