@@ -2,6 +2,8 @@
 #define __HSA_H__
 
 #include <cstring>
+#include <string>
+#include <map>
 #include <iostream>
 #include <cstdlib>
 #include <queue>
@@ -25,7 +27,7 @@ namespace HSA {
     using Setting::SCORE_MAX_L;
     using Setting::SCORE_MIN_L;
     
-    const unsigned int LINE_MAX_C = 4096U;
+    const unsigned int LINE_MAX_C = 16383U;//20180126 change from 4096U to 16383U
 
     typedef Setting::CostType CostType;
     typedef Setting::ScoreType ScoreType;
@@ -46,6 +48,7 @@ namespace HSA {
 
 		public:
 			size_t TEST_CASE = 100U;
+			bool OUTPUT_ALL = false;
 
 		inline bool BuildCost(char* path) {
 			char buf[LINE_MAX_C];
@@ -84,23 +87,28 @@ namespace HSA {
 
 		inline int BuildTree(char* path, BFTree& tree) {
 #ifdef DEBUG_Tree
-			int insertNum = 0;
+			//int insertNum = 0;
 #endif // DEBUG_Tree
 			char buf[LINE_MAX_C];
 			char lineage[LINE_MAX_C], name[LINE_MAX_C], _class[LINE_MAX_C];
 			FILE* fp = fopen(path, "r");
 			fgets(buf, LINE_MAX_C, fp);
+			int n = 0;
 			while (!feof(fp)) {
 				fgets(buf, LINE_MAX_C, fp);
+				std::string bufstr(buf);
+				//if (bufstr.length() < 3) break;
 				if (sscanf(buf, "%s %s %s", lineage, name, _class) != 3) {
 					fprintf(stderr, "Tree File Format Worry: %s\n", buf);
-					fclose(fp);
-					return -1;
+					/*fclose(fp);
+					return -1;*/ //changed so it can handle the last newline symbol in file.
+					continue;
 				}
 #ifdef DEBUG_Tree
 				++insertNum;
 #endif // DEBUG_Tree
 				tree.insert(lineage, name, nodeClass.insert(std::string(_class)));
+				//std::cout << "test" << " " << n++<< std::string(_class) <<"\n";
 			}
 			fclose(fp);
 			tree.countAndSort();
@@ -278,232 +286,7 @@ namespace HSA {
 			//myfile3.close();
 		}
 
-	//	inline void outputPValueLT(std::string rootS, std::string rootT) {
-	//		std::cout << rootS << " " << rootT << " test here!\n";
-	//		double randomeTreeScores[TEST_CASE];//byK; Store the calculated scores
-	//		ScoreType min = SCORE_MAX_G, max = SCORE_MIN_G, avg = 0;
-	//		TreeNode *subRankToNodeS[LINE_MAX_C], *subRankToNodeT[LINE_MAX_C];
-	//		int sizeS = 0, sizeT = 0;
-	//		BFTree subTreeS, subTreeT;
-	//		BFTree tmpTreeS, tmpTreeT;
-	//		//BuildTree(pathS, tmpTreeS) == 0 && BuildTree(pathT, tmpTreeT) == 0
-	//		treeS.getRankToNodeWithID(subRankToNodeS, rootS, &sizeS);
-	//		std::cout << "\nsizeS is " << sizeS << "\n";
-	//		treeS.getRankToNodeWithID(subRankToNodeT, rootT, &sizeT);
-	//		std::cout << "\nsizeT is " << sizeT << "\n";
-	//		
-	//		//*subTreeS.rankToNode = *subRankToNodeS;
-	//		subTreeS._size = sizeS;
-	//		//*subTreeT.rankToNode = *subRankToNodeT;
-	//		subTreeT._size = sizeT;
-	//		std::cout << "size of subTreeS is " << subTreeS._size << "\n";
-	//		std::cout << "size of subTreeT is " << subTreeT._size << "\n";
-
-
-	//		for (int i = 0; i < sizeS; i++) {
-	//			TreeNode *tempNode;
-	//			tempNode = new TreeNode();
-	//			//try to copy each of the TreeNode struct to avoid influence the original treeT and treeS
-	//			tempNode->id = subRankToNodeS[i]->id;
-	//			tempNode->name = subRankToNodeS[i]->name;
-	//			tempNode->leaves = subRankToNodeS[i]->leaves;
-	//			tempNode->nodeClass = subRankToNodeS[i]->nodeClass;
-	//			tempNode->rank = subRankToNodeS[i]->rank;
-	//			tempNode->left = subRankToNodeS[i]->left;
-	//			tempNode->right = subRankToNodeS[i]->right;
-
-	//			//tempNode = subRankToNodeS[i];
-	//			subTreeS.rankToNode[i] = tempNode;
-	//			//std::cout << subTreeS.rankToNode[i]->nodeClass <<" ";
-	//		}
-	//		subTreeS.sort();
-	//		/*std::cout << "\n";
-	//		for (int i = 0; i < sizeS; i++) {
-	//			std::cout << subTreeS.rankToNode[i]->nodeClass << " ";
-	//		}
-	//		std::cout << "\n";*/
-
-	//		for (int i = 0; i < sizeT; i++) {
-	//			TreeNode *tempNode;
-	//			tempNode = new TreeNode();
-	//			//try to copy each of the TreeNode struct to avoid influence the original treeT and treeS
-	//			tempNode->id = subRankToNodeT[i]->id;
-	//			tempNode->name = subRankToNodeT[i]->name;
-	//			tempNode->leaves = subRankToNodeT[i]->leaves;
-	//			tempNode->nodeClass = subRankToNodeT[i]->nodeClass;
-	//			tempNode->rank = subRankToNodeT[i]->rank;
-	//			tempNode->left = subRankToNodeT[i]->left;
-	//			tempNode->right = subRankToNodeT[i]->right;
-
-	//			//tempNode = subRankToNodeS[i];
-	//			subTreeT.rankToNode[i] = tempNode;
-	//			//std::cout << subTreeT.rankToNode[i]->nodeClass << " ";
-	//		}
-	//		subTreeT.sort();
-	//		/*std::cout << "\n";
-	//		for (int i = 0; i < sizeT; i++) {
-	//			std::cout << subTreeT.rankToNode[i]->nodeClass << " ";
-	//		}*/
-
-	//		for (int iii = 0; iii < 10; iii++) {
-	//			/*std::ofstream myfile2;
-	//			myfile2.open("C:\\Users\\ATPs\\Documents\\GitHub\\VS\\HSA\\x64\\Release\\treeT.txt");
-	//			for (int i = 0; i < sizeT; i++) {
-	//				myfile2 << subTreeT.rankToNode[i]->id << " ";
-	//			}
-	//			myfile2 << "\nafter randome\n";*/
-	//			//randomize subTreeT
-	//			BFTree *subTreeTloc;
-	//			subTreeTloc = &subTreeT;
-	//			TN::RandomTree subTree(subTreeTloc, nodeClass.size());
-	//			subTree.BuildTree();
-	//			/*for (int i = 0; i < sizeT; i++) {
-	//				myfile2 << subTreeT.rankToNode[i]->id << " ";
-	//			}
-	//			myfile2.close();*/
-	//			/*for (int i = 0; i < sizeT; i++) {
-	//				if (std::cout << subTreeT.rankToNode[i]->name)
-	//					std::cout << subTreeT.rankToNode[i]->nodeClass << " ";
-	//			}*/
-
-	//			//DPLrandTree(subTreeS, subTreeT, nodeClass, costMatrix);
-	//			static BtType subBtMatrix[Setting::NODE_MAX][Setting::NODE_MAX];
-	//			static ScoreType subScoreMatrix[Setting::NODE_MAX][Setting::NODE_MAX];
-
-
-	//			//note: check the nodeClass size, composition, and costMatrix;
-	//			std::cout << "\n nodeClass size is " << nodeClass.size() << "\n";
-	//			////nodeClass seems good
-
-	//			//check costMatrix;
-	//			/*std::cout << "\n costMatrix is \n";
-	//			for (int i = 0; i < 12; i++) {
-	//			for (int j = 0; j < 12; j++) {
-	//			std::cout << +costMatrix[i][j] << " ";
-	//			}
-	//			std::cout << "\n";
-	//			}*/
-	//			////costMatrix seems right. size of 9*9
-
-
-	//			//dynamic programing
-	//			size_t m = (subTreeS._size + 1) >> 1, n = (subTreeT._size + 1) >> 1;//checked, works fine.
-	//			//std::cout << "size m " << m << " size n " << n << "\n";
-	//			TreeNode **pi = _subrow_, **pj = _subcol_;
-	//			///*std::cout << "\n nodeClass: ";
-	//			//for (size_t i = 0; i < m; ++i, ++pi, pj = _subcol_) std::cout << (*pi)->nodeClass << " ";
-	//			//std::cout << "\n nodeClass2: ";
-	//			//for (size_t j = 0; j < n; ++j, ++pj) std::cout << (*pj)->nodeClass << " ";*/
-
-	//			std::cout << "\n subScoreMatrix\n";
-	//			for (int i = 0; i < m; ++i, ++pi, pj = _subcol_) {
-	//				for (int j = 0; j < n; ++j, ++pj) {
-	//					subBtMatrix[i][j] = SelectCase::NONE;
-	//					int tempscore = costMatrix[(*pi)->nodeClass][(*pj)->nodeClass];
-	//					//std::cout << tempscore << " ";
-	//					//subScoreMatrix[i][j] = 1;//costMatrix[(*pi)->nodeClass][(*pj)->nodeClass];
-	//					subScoreMatrix[i][j] = tempscore;//costMatrix[(*pi)->nodeClass][(*pj)->nodeClass];
-	//				}
-	//				//std::cout << "\n";
-	//			}
-	//			//delete subScoreMatrix;
-	//			//delete subBtMatrix;
-
-	//			pi = _subrow_; pj = _subcol_ + n;
-	//			for (size_t i = 0; i < m; ++i, ++pi, pj = _subcol_ + n)
-	//				for (size_t j = n; j < subTreeT._size; ++j, ++pj) {
-	//					ScoreType lScore = _subLSScore_;
-	//					ScoreType rScore = _subRSScore_;
-	//					if (lScore > rScore) {
-	//						if (lScore < 0) {
-	//							subBtMatrix[i][j] = SelectCase::NONE;
-	//							subScoreMatrix[i][j] = 0;
-	//						}
-	//						else {
-	//							subBtMatrix[i][j] = SelectCase::LS;
-	//							subScoreMatrix[i][j] = lScore;
-	//						}
-	//					}
-	//					else {
-	//						if (rScore < 0) {
-	//							subBtMatrix[i][j] = SelectCase::NONE;
-	//							subScoreMatrix[i][j] = 0;
-	//						}
-	//						else {
-	//							subBtMatrix[i][j] = SelectCase::RS;
-	//							subScoreMatrix[i][j] = rScore;
-	//						}
-	//					}
-	//				}
-
-	//			pi = _subrow_ + m; pj = _subcol_;
-	//			for (size_t i = m; i < subTreeS._size; ++i, ++pi, pj = _subcol_)
-	//				for (size_t j = 0; j < n; ++j, ++pj) {
-	//					ScoreType lScore = _subSLScore_;
-	//					ScoreType rScore = _subSRScore_;
-	//					if (lScore > rScore) {
-	//						if (lScore < 0) {
-	//							subBtMatrix[i][j] = SelectCase::NONE;
-	//							subScoreMatrix[i][j] = 0;
-	//						}
-	//						else {
-	//							subBtMatrix[i][j] = SelectCase::SL;
-	//							subScoreMatrix[i][j] = lScore;
-	//						}
-	//					}
-	//					else {
-	//						if (rScore < 0) {
-	//							subBtMatrix[i][j] = SelectCase::NONE;
-	//							subScoreMatrix[i][j] = 0;
-	//						}
-	//						else {
-	//							subBtMatrix[i][j] = SelectCase::SR;
-	//							subScoreMatrix[i][j] = rScore;
-	//						}
-	//					}
-	//				}
-
-	//			pi = _subrow_ + m; pj = _subcol_ + n;
-	//			for (size_t i = m; i < subTreeS._size; ++i, ++pi, pj = _subcol_ + n)
-	//				for (size_t j = n; j < subTreeT._size; ++j, ++pj) {
-	//					BtType selectCase = SelectCase::NONE;
-	//					ScoreType maxScore = SCORE_MIN_L;
-	//					ScoreType score = _subLSScore_;
-	//					_Select_Max_(SelectCase::LS)
-	//						score = _subRSScore_;
-	//					_Select_Max_(SelectCase::RS)
-	//						score = _subSLScore_;
-	//					_Select_Max_(SelectCase::SL)
-	//						score = _subSRScore_;
-	//					_Select_Max_(SelectCase::SR)
-	//						score = _subLLScore_;
-	//					_Select_Max_(SelectCase::LL)
-	//						score = _subLRScore_;
-	//					_Select_Max_(SelectCase::LR)
-	//						subBtMatrix[i][j] = selectCase;
-	//					subScoreMatrix[i][j] = maxScore;
-	//				}
-	//			std::ofstream myfile;
-	//			myfile.open("C:\\Users\\ATPs\\Documents\\GitHub\\VS\\HSA\\x64\\Release\\costMatrix.tsv");
-	//			std::cout << "\n subScoreMatrix: \n";
-	//			ScoreType subMaxScoretmp, subMaxScore = SCORE_MIN_G;
-	//			for (size_t i = 0; i < subTreeS._size; i++) {
-	//				for (size_t j = 0; j < subTreeT._size; j++) {
-	//					subMaxScoretmp = scoreMatrix[i][j];
-	//					myfile << subMaxScoretmp << "\t";
-	//					if (subMaxScoretmp > subMaxScore) {
-	//						subMaxScore = scoreMatrix[i][j];
-	//					}
-	//				}
-	//				myfile << "\n";
-	//			}
-	//			myfile.close();
-	//			std::cout << "\n subMaxScore is " << subMaxScore << "\n";
-	//		}
-	//}
-
-
-
+	
 
         inline void outputMatch(FILE* & fp, size_t & row, size_t & col, ScoreType& maxScore) {
             fprintf(fp, "Score:%d\nRootS:%s\nRootT:%s\n", maxScore,
@@ -592,6 +375,72 @@ namespace HSA {
             fclose(fp);
         }
 
+		inline void outputTree(FILE* fp, BFTree treeUse) {
+			fprintf(fp, "id\tname\tleaves\tnodeClass\trank\n");
+			for (int i = 0; i < treeUse._size; i++) {
+				if (treeUse.rankToNode[i]->leaves < 2) {//leaves
+					fprintf(fp, "%s\t%s\t%d\t%d\t%d\n", treeUse.rankToNode[i]->id.c_str(), treeUse.rankToNode[i]->name.c_str(),
+						treeUse.rankToNode[i]->leaves, treeUse.rankToNode[i]->nodeClass,
+						treeUse.rankToNode[i]->rank);
+				}
+				else {//internal nodes, no nodeClass
+					fprintf(fp, "%s\t%s\t%d\t\t%d\n", treeUse.rankToNode[i]->id.c_str(), treeUse.rankToNode[i]->name.c_str(),
+						treeUse.rankToNode[i]->leaves, treeUse.rankToNode[i]->rank);
+				}
+			}
+		}
+
+		inline void outputNodeClass(FILE* fp) {
+			fprintf(fp, "\n");
+			fprintf(fp, "nodeClass:{\n");
+			for (std::map<std::string, int>::iterator it = nodeClass._map.begin(); it != nodeClass._map.end(); it++) {
+				fprintf(fp, "%s\t%d\n", it->first.c_str(), it->second);
+			}
+			fprintf(fp, "}\n");
+		}
+
+		inline void outputScoreMatrix(FILE* fp) {
+			fprintf(fp, "\n");
+			fprintf(fp, "scoreMatrix:(row, treeS;col, treeT){\n");
+			for (int i = 0; i < treeS._size; i++) {
+				for (int j = 0; j < treeT._size; j++) {
+					fprintf(fp, "%d\t", scoreMatrix[i][j]);
+				}
+				fprintf(fp, "\n");
+			}
+			fprintf(fp, "}\n");
+		}
+
+		inline void outputGResult2(char* path) {
+			DP();
+			std::string outFile(path);
+			FILE* fp = fopen(path, "w");
+			if (treeS._size == 0 || treeT._size == 0) {
+				fprintf(stderr, "treeS._size == 0 || treeT._size == 0 In outputLResult()\n");
+				return;
+			}
+
+			if (OUTPUT_ALL) {//write the treeS, treeT, and score
+				fprintf(fp, "treeS:{\n");//write treeS
+				outputTree(fp, treeS);
+				fprintf(fp, "}\n");
+				fprintf(fp, "treeT:{\n");//write treeT
+				outputTree(fp, treeT);
+				fprintf(fp, "}\n");
+				outputNodeClass(fp);//write nodeClass
+				outputScoreMatrix(fp);//write scoreMatrix
+			}
+
+			size_t row = treeS._size - 1, col = treeT._size - 1;
+			ScoreType maxScore = scoreMatrix[row][col];
+
+			outputMatch(fp, row, col, maxScore);
+			if (TEST_CASE > 1) {//do test and calculate pvalue if TEST_CASE is greater than 2
+				outputPValue(fp, maxScore);
+			}
+			fclose(fp);
+		}
+
         inline std::vector<std::tuple<std::string, std::string>> outputLResult(char* path, size_t num) {
             std::string outFile(path);
 			std::vector<std::tuple<std::string, std::string>> subTreeRootsTS;
@@ -607,7 +456,7 @@ namespace HSA {
 			
 			
         outputLResultForLoopEnd:
-            while (inum <= num) {
+            while (inum <= num)   {
 #ifdef DEBUG_Bt
                 for (size_t i = 0; i < treeS._size; ++i) {
                     for (size_t j = 0; j < treeT._size; ++j) {
@@ -722,6 +571,150 @@ namespace HSA {
             fclose(fp);
 			return subTreeRootsTS;
         }
+		
+		inline std::vector<std::tuple<std::string, std::string>> outputLResult2(char* path, size_t num) {//for verbose syntax
+			std::vector<std::tuple<std::string, std::string>> subTreeRootsTS;
+			FILE* fp = fopen(path, "w");//open the file
+			if (treeS._size == 0 || treeT._size == 0) {
+				fprintf(stderr, "treeS._size == 0 || treeT._size == 0 In outputLResult()\n");
+				return subTreeRootsTS;
+			}
+
+			DPL();
+
+			if (OUTPUT_ALL) {//write the treeS, treeT, and score
+				fprintf(fp, "treeS:{\n");//write treeS
+				outputTree(fp, treeS);
+				fprintf(fp, "}\n");
+				fprintf(fp, "treeT:{\n");//write treeT
+				outputTree(fp, treeT);
+				fprintf(fp, "}\n");
+				outputNodeClass(fp);//write nodeClass
+				outputScoreMatrix(fp);//write scoreMatrix
+			}
+
+			size_t inum = 1U;
+			ScoreType maxScoreMax;
+
+
+		outputLResultForLoopEnd:
+			while (inum <= num) {
+#ifdef DEBUG_Bt
+				for (size_t i = 0; i < treeS._size; ++i) {
+					for (size_t j = 0; j < treeT._size; ++j) {
+						printf("%d ", btMatrix[i][j]);
+					}
+					printf("\n");
+				}
+				printf("\n");
+#endif // DEBUG_Bt
+				size_t row, col;
+				ScoreType maxScore = SCORE_MIN_L - 1;
+				for (size_t i = 0; i < treeS._size; ++i)
+					for (size_t j = 0; j < treeT._size; ++j) {
+						if (_CanUseCase_(btMatrix[i][j]) && scoreMatrix[i][j] > maxScore) {
+							maxScore = scoreMatrix[i][j];
+							row = i;
+							col = j;
+						}
+					}
+				if (maxScore < SCORE_MIN_L) {
+					fprintf(fp, "All node used.\n");
+					break;
+				}
+
+				std::string *rootS = &((treeS.rankToNode[row])->id);
+				std::string *rootT = &((treeT.rankToNode[col])->id);
+				std::string pruneS, pruneT, matchS, matchT;
+				std::vector<Point> vec;
+				vec.push_back(Point(row, col));
+				size_t vecSize = 1U;
+				do {
+
+					switch (_ReCase_(btMatrix[row][col])) {
+					case SelectCase::NONE:
+						break;
+					case SelectCase::LL: {
+						TreeNode* pi = _row_[row];
+						TreeNode* pj = _col_[col];
+						matchS += pi->left->id + " " + pi->right->id + " ";
+						matchT += pj->left->id + " " + pj->right->id + " ";
+						vec.push_back(Point(pi->left->rank, pj->left->rank));
+						vec.push_back(Point(pi->right->rank, pj->right->rank));
+						break;
+					}
+					case SelectCase::LR: {
+						TreeNode* pi = _row_[row];
+						TreeNode* pj = _col_[col];
+						matchS += pi->left->id + " " + pi->right->id + " ";
+						matchT += pj->right->id + " " + pj->left->id + " ";
+						vec.push_back(Point(pi->left->rank, pj->right->rank));
+						vec.push_back(Point(pi->right->rank, pj->left->rank));
+						break;
+					}
+					case SelectCase::LS: {
+						pruneT += _col_[col]->right->id + " ";
+						vec.push_back(Point(_row_[row]->rank, _col_[col]->left->rank));
+						break;
+					}
+					case SelectCase::RS: {
+						pruneT += _col_[col]->left->id + " ";
+						vec.push_back(Point(_row_[row]->rank, _col_[col]->right->rank));
+						break;
+					}
+					case SelectCase::SL: {
+						pruneS += _row_[row]->right->id + " ";
+						vec.push_back(Point(_row_[row]->left->rank, _col_[col]->rank));
+						break;
+					}
+					case SelectCase::SR: {
+						pruneS += _row_[row]->left->id + " ";
+						vec.push_back(Point(_row_[row]->right->rank, _col_[col]->rank));
+						break;
+					}
+					case SelectCase::USED: {
+						std::pair<size_t, size_t> tmp = vec.front();
+						btMatrix[tmp.first][tmp.second] += SelectCase::USED;
+						goto outputLResultForLoopEnd;
+					}
+					default:
+						fprintf(stderr, "btMatrix Worry In outputResult()\n");
+					}
+					if (vecSize == vec.size()) {
+						break;
+					}
+					else {
+						std::pair<size_t, size_t> tmp = vec[vecSize++];
+						row = tmp.first;
+						col = tmp.second;
+					}
+				} while (1);
+				while (vecSize > 0) {
+					std::pair<size_t, size_t> tmp = vec[--vecSize];
+					btMatrix[tmp.first][tmp.second] = SelectCase::USED;
+				}
+				fprintf(fp,
+					"%u{\nScore:%d\nRootS:%s\nRootT:%s\nPruneS:%s\nPruneT:%s\nMatchS:%s\nMatchT:%s\n}\n",
+					inum, maxScore, rootS->c_str(), rootT->c_str(),
+					pruneS.c_str(), pruneT.c_str(), matchS.c_str(), matchT.c_str()
+				);
+
+
+				maxScoreMax = maxScore;
+
+				//outputPValueLT(rootS->c_str(), rootT->c_str());
+				//std::cout << *rootS + " "+*rootT<<"\n";
+				subTreeRootsTS.push_back(std::tuple<std::string, std::string>(*rootS, *rootT));
+
+
+				++inum;
+			}
+
+
+			fclose(fp);
+			return subTreeRootsTS;
+		}
+
 
         inline void DPL(void) {
                 size_t m = (treeS._size + 1) >> 1, n = (treeT._size + 1) >> 1;
@@ -828,6 +821,8 @@ namespace HSA {
         ~HSA () {
         }
     };
+
+	
 }
 
 #endif // !__HSA_H__
@@ -853,6 +848,23 @@ void kOutputAndGeneratePValue(std::vector<std::tuple<std::string, std::string>> 
 		subRootS = std::get<0>(*it);
 		subRootT = std::get<1>(*it);
 		fprintf(fp,"%d{\n",i);
+		i++;
+		kOutputAndGeneratePValueOne(subRootS, subRootT, pathCost, pathTreeS, pathTreeT, fp, testNum);
+		fprintf(fp, "}\n");
+	}
+	fclose(fp);
+}
+
+void kOutputAndGeneratePValue2(std::vector<std::tuple<std::string, std::string>> subTreeRootsST, 
+	char* pathCost, char* pathTreeS, char* pathTreeT, int testNum, char* outfile) {
+	std::vector <std::tuple<std::string, std::string>> ::iterator it;
+	int i = 1;
+	FILE* fp = fopen(outfile, "a");
+	for (it = subTreeRootsST.begin(); it<subTreeRootsST.end(); it++) {
+		std::string subRootS, subRootT;
+		subRootS = std::get<0>(*it);
+		subRootT = std::get<1>(*it);
+		fprintf(fp, "%d{\n", i);
 		i++;
 		kOutputAndGeneratePValueOne(subRootS, subRootT, pathCost, pathTreeS, pathTreeT, fp, testNum);
 		fprintf(fp, "}\n");

@@ -27,7 +27,7 @@ public:
         return _map.size();
     }
 
-private:
+//private:
     NodeClassMap _map;
 };
 

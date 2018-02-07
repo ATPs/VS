@@ -27,7 +27,7 @@ namespace TN {
         return a->leaves < b->leaves;
     }
     
-    const size_t NODE_MAX_NUM = 4096U;
+    const size_t NODE_MAX_NUM = 16383U;//20180126 change from 4096U to 16383U
     class BFTree {
 
         void freeBFTree(TreeNode* node) {//delete node and all its children

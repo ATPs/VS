@@ -12,7 +12,7 @@
 
 namespace IOLib {
     using TN::TreeNode;
-    const unsigned int LINE_MAX_C = 4096U;
+    const unsigned int LINE_MAX_C = 16383U;//20180126 change from 4096U to 16383U
 
     TreeNode* BuildTree(char* path) {
         char buf[LINE_MAX_C];

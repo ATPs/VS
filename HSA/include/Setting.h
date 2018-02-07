@@ -20,9 +20,10 @@
 namespace Setting {
     typedef char BacktrackingType;
 
-    const unsigned int CLASS_MAX = 1024U;
+    const unsigned int CLASS_MAX = 16383U;
     const unsigned int NODE_MAX_OFFSET = 11U;
-    const unsigned int NODE_MAX = 1U << NODE_MAX_OFFSET;
+    //const unsigned int NODE_MAX = 1U << NODE_MAX_OFFSET;//NODE_MAX 2048. change
+	const unsigned int NODE_MAX = 16383U;
     const unsigned int NODE_MAX_MASK = NODE_MAX - 1U;
 
     typedef char CostType;
