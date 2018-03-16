@@ -16,6 +16,7 @@ struct HSAargs {
 	int test;
 	char *outfile;
 	bool all;
+	int prune;//20180313
 };
 
 void printHSAargs(HSAargs argS) {
@@ -28,6 +29,7 @@ void printHSAargs(HSAargs argS) {
 	cout << "test " << argS.test << endl;
 	cout << "outfile " << argS.outfile << endl;
 	cout << "all " << argS.all << endl;
+	cout << "prune " << argS.prune << endl;//20180313
 }
 
 
@@ -53,6 +55,8 @@ ArgProcessor::ArgProcessor(int argc, char* argv[]) {
 	argVal["test"] = "0";
 	argVal["outfile"] = "";
 	argVal["all"] = "F";
+	argVal["prune"] = "1";
+
 	//required options
 	argVal["treeS"] = "";
 	argVal["treeT"] = "";
@@ -96,6 +100,7 @@ ArgProcessor::ArgProcessor(int argc, char* argv[]) {
 	argS.test = stoi(argVal["test"]);
 	argS.outfile = str2charx(argVal["outfile"]);
 	argS.all = argVal["all"] == "T" ? true : false;
+	argS.prune = stoi(argVal["prune"]);
 
 	//printMap(argVal);
 	//printHSAargs(argS);
@@ -121,7 +126,7 @@ void printHelpInfo(bool fullOption) {
 	cout << "  Usage: " << endl;
 	cout << "  HSA [-treeS <TreeS file path>] [-treeT <TreeT file path>] " << endl;
 	cout << "      [-cost <Cost file path>] [-method <l or g>] [-max_target <target num for l>] " << endl;
-	cout << "      [-test testNum] [-outfile <output file path>] [-all <T or F>]" << endl;
+	cout << "      [-test testNum] [-outfile <output file path>] [-all <T or F>] [-prune pruneScore]" << endl;
 	cout << "  required options: -treeS, -treeT, -cost, -method" << endl;
 
 	if (fullOption) {
@@ -137,6 +142,7 @@ void printHelpInfo(bool fullOption) {
 		cout << "    -test: testNum to calculate p-value. If testNum <=2, do not output p-value. default 0" << endl;
 		cout << "    -outfile: output file path. default: TreeS file path + l or g, based on -method" << endl;
 		cout << "    -all: T or F. output as much information as possible. default F;" << endl;
+		cout << "    -prune: pruneScore is the punish for pruning one leaf. default 1" << endl;//20180313
 	}
 
 }

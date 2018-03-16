@@ -6,7 +6,7 @@
 //#define GLOBAL
 //HSA::HSA hsa;
 
-
+int Setting::PRUNE_CONSTANT;
 
 
 int main(int argc, char** argv) {
@@ -67,6 +67,9 @@ int main(int argc, char** argv) {
 			hsa2->TEST_CASE = args.argS.test;
 			hsa2->OUTPUT_ALL = args.argS.all;
 			int testNum = args.argS.test;
+
+			Setting::PRUNE_CONSTANT = args.argS.prune;//20180313
+			
 
 			if (hsa2->BuildCost(args.argS.cost) && hsa2->BuildTreeTS(args.argS.treeS, args.argS.treeT)) {//build cost, build TreeTS
 				if (args.argS.method == Setting::GlobalC) {//global alignment

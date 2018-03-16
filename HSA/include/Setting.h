@@ -30,6 +30,8 @@ namespace Setting {
     const CostType NOT_MATCH_COST = -2;
     const CostType MATCH_COST = 2;
 
+	extern int PRUNE_CONSTANT;//20180313
+
     typedef int ScoreType;
     const int SCORE_MAX = INT_MAX;
     const int SCORE_MIN = INT_MIN;
