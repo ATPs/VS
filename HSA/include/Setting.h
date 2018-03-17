@@ -38,7 +38,7 @@ namespace Setting {
     const int SCORE_MAX_G = INT_MAX;
     const int SCORE_MIN_G = INT_MIN;
     const int SCORE_MAX_L = INT_MAX;
-    const int SCORE_MIN_L = 0;
+    const int SCORE_MIN_L = INT_MIN;//change from 0 to INT_MIN
 	const int MAX_TEST = 10000;
 
 	const size_t TEST_CASE = 100U;

@@ -179,7 +179,7 @@ namespace HSA {
 					_Select_Max_(SelectCase::LL)
 						score = _LRScore_;
 					_Select_Max_(SelectCase::LR)
-						_Select_Max_(SelectCase::SR)
+						//_Select_Max_(SelectCase::SR)
 						btMatrix[i][j] = selectCase;
 					scoreMatrix[i][j] = maxScore;
 				}
@@ -467,7 +467,7 @@ namespace HSA {
                 printf("\n");
 #endif // DEBUG_Bt
                 size_t row, col;
-                ScoreType maxScore = SCORE_MIN_L - 1;
+                ScoreType maxScore = SCORE_MIN_L;
                 for (size_t i = 0; i < treeS._size; ++i)
                     for (size_t j = 0; j < treeT._size; ++j) {
                         if (_CanUseCase_(btMatrix[i][j]) && scoreMatrix[i][j] > maxScore) {
@@ -609,7 +609,7 @@ namespace HSA {
 				printf("\n");
 #endif // DEBUG_Bt
 				size_t row, col;
-				ScoreType maxScore = SCORE_MIN_L - 1;
+				ScoreType maxScore = SCORE_MIN_L;
 				for (size_t i = 0; i < treeS._size; ++i)
 					for (size_t j = 0; j < treeT._size; ++j) {
 						if (_CanUseCase_(btMatrix[i][j]) && scoreMatrix[i][j] > maxScore) {
@@ -730,21 +730,21 @@ namespace HSA {
                         ScoreType lScore = _LSScore_;
                         ScoreType rScore = _RSScore_;
                         if (lScore > rScore) {
-                            if (lScore < 0) {
+                            /*if (lScore < 0) {
                                 btMatrix[i][j] = SelectCase::NONE;
                                 scoreMatrix[i][j] = 0;
-                            } else {
+                            } else {*/
                                 btMatrix[i][j] = SelectCase::LS;
                                 scoreMatrix[i][j] = lScore;
-                            }
+                            /*}*/
                         } else {
-                            if (rScore < 0) {
+                            /*if (rScore < 0) {
                                 btMatrix[i][j] = SelectCase::NONE;
                                 scoreMatrix[i][j] = 0;
-                            } else {
+                            } else {*/
                                 btMatrix[i][j] = SelectCase::RS;
                                 scoreMatrix[i][j] = rScore;
-                            }
+                            /*}*/
                         }
                     }
                 pi = _row_ + m; pj = _col_;
@@ -753,22 +753,22 @@ namespace HSA {
                         ScoreType lScore = _SLScore_;
                         ScoreType rScore = _SRScore_;
                         if (lScore > rScore) {
-                            if (lScore < 0) {
+                            /*if (lScore < 0) {
                                 btMatrix[i][j] = SelectCase::NONE;
                                 scoreMatrix[i][j] = 0;
-                            } else {
+                            } else {*/
                                 btMatrix[i][j] = SelectCase::SL;
                                 scoreMatrix[i][j] = lScore;
-                            }
+                            /*}*/
 
                         } else {
-                            if (rScore < 0) {
+                            /*if (rScore < 0) {
                                 btMatrix[i][j] = SelectCase::NONE;
                                 scoreMatrix[i][j] = 0;
-                            } else {
+                            } else {*/
                                 btMatrix[i][j] = SelectCase::SR;
                                 scoreMatrix[i][j] = rScore;
-                            }
+                            /*}*/
                         }
                     }
                 pi = _row_ + m; pj = _col_ + n;
